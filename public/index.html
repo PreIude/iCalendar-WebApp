@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link
+    href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/4QAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIhERIRESEREiEREhERIRESIRESEREhERIhERIRESEREiIiIiIgIiIiIRESEREhERIhERIRESEREiEREhERIRESIRESEREhERIiIiIiIiIiIiEREhERIRESIRESEREhERIhERIRESEREiEREhERIRESIiIiIiIiIiIiIiIiIiIiIAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    rel="icon" type="image/x-icon" />
+  <title>Jin's iCal</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ical">
+  <meta name="keywords" content="50%">
+  <meta name="author" content="Jing Xuan Long">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+  <div id="head" class="hideHeader">
+    <div id="scrollStatus">
+      <h3>iCalendar Manager</h3>
+      <h4>Status</h4>
+      <p id="statusText">
+      </p>
+    </div>
+    <br>
+    <div style="position:absolute;bottom:-140px;  right:0">
+      <button id="clear" class="btn btn-secondary" type='button'>Clear</button>
+    </div>
+  </div>
+  <br><br><br><br><br><br /><br />
+  <h3 id='fileLogHeader' class='hideHeader'>File Log</h3>
+  <br />
+  <div id="tableScroll" class="scroll">
+    <table class="table" id='fileTable'>
+      <thead>
+        <tr>
+          <th>File Name (Click to download)</th>
+          <th>Version</th>
+          <th>Product ID</th>
+          <th>Number of Events</th>
+          <th>Number of Properties</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <div id="uploadHider" class='hideHeader'>
+    <form id="fileForm" enctype="multipart/form-data">
+      <div class="row" style="margin: 0px">
+        <input id="fileName" type="file" name="uploadFile" accept='.ics'>
+        <button id="fileConfirm" class="btn btn-secondary" type='button'>Upload</button>
+        <div id="addCalendarHider" style="position:relative; right:-50px">
+          <button id="addCalendar" class="btn btn-secondary" type='button'>Create New Calendar</button>
+        </div>
+      </div>
+    </form>
+    <br>
+    <br />
+  </div>
+  <h3 style="display: none;" id='calHeader'>Calendar Log</h3>
+  <br />
+  <div class="row" style="margin: 0px">
+    <div id="selectorHider" style="display: none;">
+      <form id="selectForm">
+        <div class="row" style="margin: 0px">
+          <select id="selector" style="width:200px ; height:25px">
+          </select>
+          <div style="margin: 0px">
+            <button id="calendarConfirm" class="btn btn-secondary" type='button'>View</button>
+          </div>
+          <div id="addEventHider" style="margin: 0px;display: none;position:relative;right:-50px">
+            <button id="addEvent" class="btn btn-secondary" type='button'>Add New Event</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <br>
+  <div id="calHider" class="scroll">
+    <table class="table" ; id='calTable'>
+      <tr>
+        <th>Event Num</th>
+        <th>Start Date</th>
+        <th>Start Time</th>
+        <th>Summary</th>
+        <th>Number of Properties</th>
+        <th>Number of Alarms</th>
+      </tr>
+    </table>
+  </div>
+  <br>
+  <div id="postFilePick" class="hideHeader">
+    <form id="selectEvent">
+      <div class="row" style="margin: 0px">
+        <select id="eventDropdown" style="width:200px ; height:25px">
+        </select>
+        <div style="margin: 0px">
+          <button id="propConfirm" class="btn btn-secondary" type='button'>View Props</button>
+          <button id="alarmConfirm" class="btn btn-secondary" type='button'>View Alarms</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <br>
+  <div class="container" id="newEvent">
+    <form id="create-evt">
+      <div>
+        <br />
+        <h1>Event Input</h1>
+        <br>
+        <h5>Start Date:</h5> <input type="date" id="eventDate" max="9999-12-31"><br><br>
+        <h5>Start Time:</h5> <input type="time" name="time" id="eventTime"><br><br>
+        <h5>UTC:</h5>
+        <div style="position: relative;left: -50px;">
+          <input type="checkbox" id="addEventUTC" name="addEventisUtc">
+        </div>
+        <h5>Summary (optional):</h5> <input type="text" id="eventSummary"><br><br>
+        <button class="btn btn-secondary" type='button' id="submitNewEvent">Confirm</button><br><br>
+      </div>
+    </form>
+  </div>
+  <div class="container" id="newCal">
+    <form id="create-cal">
+      <div>
+        <br>
+        <h1>Calendar Input</h1>
+        <br>
+        <h5>File Name: </h5> <input type="text" id="file-name"><br><br>
+        <h5>Version:</h5> <input type="text" id="version"><br><br>
+        <h5>Product ID:</h5> <input type="text" id="prod-id"><br><br>
+      </div>
+      <div>
+        <h1>Event Input</h1>
+        <br>
+        <h5>Start Date:</h5> <input type="date" id="calDate" max="9999-12-31"><br><br>
+        <h5>Start Time:</h5> <input type="time" name="time" id="calTime"><br><br>
+        <h5>UTC:</h5>
+        <div style="position: relative;left: -50px;">
+          <input type="checkbox" id="addCalUTC" name="addCalisUtc" value="UTC">
+        </div>
+        <h5>Summary (optional):</h5> <input type="text" id="calSummary"><br><br>
+        <button class="btn btn-secondary" type='button' id="submitNewCal">Create Calendar</button>
+      </div>
+    </form>
+  </div>
+  <br />
+  <h3 id='propHeader' class='hideHeader'>Optional Properties</h3>
+  <div id="propHider" class="scroll">
+    <br />
+    <table class="table" ; id='eventProps'>
+      <tr>
+        <th>Property Num</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </table>
+  </div>
+  <h3 id='alarmHeader' class='hideHeader'>Alarms</h3>
+  <div id="alarmHider" class="scroll">
+    <br />
+    <table class="table" ; id='eventAlarms'>
+      <tr>
+        <th>Alarm Num</th>
+        <th>Action</th>
+        <th>Trigger</th>
+        <th>Number of Properties</th>
+      </tr>
+    </table>
+  </div>
+  <h3 style="display: none;" id='datHeader'>Database</h3>
+
+  <div class="hideHeader" id="loginPanel">
+    <h1>Login</h1>
+    <br>
+    <h5>Username:</h5> <input type="text" id="user"><br><br>
+    <h5>Password:</h5> <input type="password" id="pass"><br><br>
+    <h5>Database:</h5> <input type="text" id="data"><br><br>
+    <button class="btn btn-secondary" type='button' id="login">Login</button>
+  </div>
+
+  <div class="hideHeader" id="postLogin">
+    <button class="btn btn-secondary" type='button' id="loadData">Store All Files</button>
+  </div>
+  <br />
+
+  <div class="hideHeader" id="other">
+
+    <button class="btn btn-secondary" type='button' id="clearData">Clear All Data</button>
+    <button class="btn btn-secondary" type='button' id="displayStatus">Display DB Status</button>
+    <br />
+    <br />
+  </div>
+
+  <div class="hideHeader" id="queries">
+
+    <button class="btn btn-secondary" type='button' id="byStartDate">Display all events sorted by start date</button>
+    <br />
+    <br />
+    <button class="btn btn-secondary" type='button' id="byFile">Display all events from a specific file</button>
+    <select id="fileQuery" style="width:200px ; height:25px">
+    </select>
+    <br />
+    <br />
+
+    <button class="btn btn-secondary" type='button' id="byConflict">Display all events which may conflict with each other</button>
+    <br />
+    <br />
+    <button class="btn btn-secondary" type='button' id="byAlarm">Display all alarms in events with the organizer</button>
+    <br />
+    <br />
+    <button class="btn btn-secondary" type='button' id="byDistinct">Display events in Guelph with distinct organizers</button>
+    <br />
+    <br />
+    <button class="btn btn-secondary" type='button' id="byTime">Display events on or after selected date</button>
+    <input type="date" id="queryDate" max="9999-12-31">
+    <br />
+    <br />
+  </div>
+
+  <div id="query1Hider" class="scroll">
+    <table class="table" ; id='query1'>
+      <tr>
+        <th>event_id</th>
+        <th>summary</th>
+        <th>start_time</th>
+        <th>location</th>
+        <th>organizer</th>
+        <th>cal_file</th>
+      </tr>
+    </table>
+  </div>
+
+  <div id="query2Hider" class="scroll">
+    <table class="table" ; id='query2'>
+      <tr>
+        <th>event num</th>
+        <th>start_time</th>
+        <th>summary</th>
+      </tr>
+    </table>
+  </div>
+
+  <div id="query3Hider" class="scroll">
+    <table class="table" ; id='query3'>
+      <tr>
+        <th>event_id</th>
+        <th>summary</th>
+        <th>start_time</th>
+        <th>location</th>
+        <th>organizer</th>
+        <th>cal_file</th>
+      </tr>
+    </table>
+  </div>
+
+  <div id="query4Hider" class="scroll">
+    <table class="table" ; id='query4'>
+      <tr>
+        <th>event_id</th>
+        <th>organizer</th>
+        <th>action</th>
+        <th>trigger</th>
+      </tr>
+    </table>
+  </div>
+
+  <div id="query5Hider" class="scroll">
+    <table class="table" ; id='query5'>
+      <tr>
+        <th>location</th>
+        <th>organizer</th>
+      </tr>
+    </table>
+  </div>
+
+  <div id="query6Hider" class="scroll">
+    <table class="table" ; id='query6'>
+      <tr>
+        <th>event_id</th>
+        <th>summary</th>
+        <th>start_time</th>
+        <th>location</th>
+        <th>organizer</th>
+        <th>cal_file</th>
+      </tr>
+    </table>
+  </div>
+  <br>
+
+  <script src="/index.js">
+  </script>
+</body>
+
+</html>
